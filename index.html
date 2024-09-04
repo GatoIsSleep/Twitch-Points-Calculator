@@ -97,6 +97,15 @@
 <script>
     let selectedTier = 0;
 
+    // Datos para puntos y tiempo
+    const timeData = {
+        0: { points: 100, time: { hours: 0, minutes: 18, seconds: 45 } },
+        1: { points: 1000, time: { hours: 3, minutes: 7, seconds: 30 } }
+    };
+
+    // Multiplicadores por tier
+    const tierMultipliers = [1, 1.2, 1.4, 2.0];
+
     // Función para seleccionar el tier
     function selectTier(tier) {
         selectedTier = tier;
@@ -107,24 +116,29 @@
 
     // Función para calcular el tiempo de visualización necesario
     function calculateWatchTime() {
-        const pointsDesired = document.getElementById('points').value;
+        const pointsDesired = parseInt(document.getElementById('points').value);
         if (!pointsDesired || pointsDesired <= 0) {
             document.getElementById('result').innerText = "Please enter a valid number of points.";
             return;
         }
 
-        const tierMultipliers = [1, 1.2, 1.4, 2.0];
-        const pointsPerMinute = 10;  // Puntos por cada 5 minutos
-        const activePointsPer15Minutes = 50; // Puntos si redimes cada 15 minutos
+        const basePoints = timeData[0].points; // Base points for Tier 0
+        const baseTime = timeData[0].time; // Base time for Tier 0
 
-        const totalPointsPerMinute = pointsPerMinute * tierMultipliers[selectedTier];
+        // Calcular el tiempo en segundos para los puntos base
+        const baseTimeInSeconds = baseTime.hours * 3600 + baseTime.minutes * 60 + baseTime.seconds;
 
-        const watchTime = pointsDesired / totalPointsPerMinute;
+        // Calcula el tiempo necesario para el número de puntos deseados
+        const totalPoints = pointsDesired * tierMultipliers[selectedTier];
+        const secondsPer100Points = baseTimeInSeconds / (basePoints / 100);
+        const totalTimeInSeconds = totalPoints * secondsPer100Points / 100;
 
-        const hours = Math.floor(watchTime / 60);
-        const minutes = Math.floor(watchTime % 60);
+        // Convertir el tiempo total en horas, minutos y segundos
+        const hours = Math.floor(totalTimeInSeconds / 3600);
+        const minutes = Math.floor((totalTimeInSeconds % 3600) / 60);
+        const seconds = Math.floor(totalTimeInSeconds % 60);
 
-        document.getElementById('result').innerText = `You need to watch approximately ${hours} hours and ${minutes} minutes to earn ${pointsDesired} points at Tier ${selectedTier}.`;
+        document.getElementById('result').innerText = `You need to watch approximately ${hours} hours, ${minutes} minutes, and ${seconds} seconds to earn ${pointsDesired} points at Tier ${selectedTier}.`;
     }
 </script>
 
