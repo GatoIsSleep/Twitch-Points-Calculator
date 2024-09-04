@@ -44,6 +44,10 @@
     </style>
 </head>
 <body>
+
+<div class="container">
+    <h1>Calculadora de Tiempo de Visualización</h1>
+    <div>
         <label for="subscriber">Eres suscriptor:</label>
         <input type="checkbox" id="subscriber" />
     </div>
@@ -77,7 +81,6 @@
             return;
         }
 
-        // Datos de tiempo base en segundos para 100 puntos
         const timeBase = {
             0: { hours: 0, minutes: 18, seconds: 45 },
             1: { hours: 0, minutes: 15, seconds: 38 },
@@ -85,20 +88,16 @@
             3: { hours: 0, minutes: 9, seconds: 23 }
         };
 
-        // Obtener el tiempo base en segundos para el tier seleccionado
         const baseTime = timeBase[selectedTier];
         const timeInSeconds = baseTime.hours * 3600 + baseTime.minutes * 60 + baseTime.seconds;
 
-        // Calcular puntos totales incluyendo los puntos de bonificación si es suscriptor
         const pointsMultiplier = tierMultipliers[selectedTier];
         const bonusPoints = isSubscriber ? bonusPointsPerTier[selectedTier] : 0;
         const totalPointsPerHour = (pointsPerTier[selectedTier] * 12 + bonusPoints) * pointsMultiplier;
 
-        // Calcular el tiempo necesario en segundos
         const timePerPoint = timeInSeconds / 100;
         const totalTimeInSeconds = (pointsDesired * timePerPoint) / totalPointsPerHour;
 
-        // Convertir el tiempo total a horas, minutos y segundos
         const hours = Math.floor(totalTimeInSeconds / 3600);
         const minutes = Math.floor((totalTimeInSeconds % 3600) / 60);
         const seconds = Math.floor(totalTimeInSeconds % 60);
