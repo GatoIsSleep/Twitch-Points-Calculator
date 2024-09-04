@@ -63,9 +63,8 @@
 
 <script>
     let selectedTier = 0;
-    const pointsPerTier = [10, 12, 14, 20];
-    const bonusPointsPerTier = [50, 60, 70, 100];
-    const tierMultipliers = [1, 1.2, 1.4, 2.0];
+    const pointsPer5Minutes = [10, 12, 14, 20];
+    const bonusPointsPer15Minutes = [50, 60, 70, 100];
 
     function selectTier(tier) {
         selectedTier = tier;
@@ -81,26 +80,19 @@
             return;
         }
 
-        const timeBase = {
-            0: { minutes: 18, seconds: 45 },
-            1: { minutes: 15, seconds: 38 },
-            2: { minutes: 13, seconds: 24 },
-            3: { minutes: 9, seconds: 23 }
-        };
+        const pointsPer5Min = pointsPer5Minutes[selectedTier];
+        const bonusPoints15Min = bonusPointsPer15Minutes[selectedTier];
+        
+        const pointsPerMinute = pointsPer5Min / 5;
+        const bonusPointsPerMinute = bonusPoints15Min / 15;
+        
+        const totalPointsPerMinute = pointsPerMinute + bonusPointsPerMinute;
 
-        const baseTime = timeBase[selectedTier];
-        const baseTimeInSeconds = baseTime.minutes * 60 + baseTime.seconds;
+        const totalMinutes = pointsDesired / totalPointsPerMinute;
 
-        const pointsMultiplier = tierMultipliers[selectedTier];
-        const bonusPoints = bonusPointsPerTier[selectedTier];
-        const pointsPerHour = (pointsPerTier[selectedTier] * 12 + bonusPoints) * pointsMultiplier;
-
-        const timePerPoint = baseTimeInSeconds / 100;
-        const totalTimeInSeconds = (pointsDesired * timePerPoint) / pointsPerHour;
-
-        const hours = Math.floor(totalTimeInSeconds / 3600);
-        const minutes = Math.floor((totalTimeInSeconds % 3600) / 60);
-        const seconds = Math.floor(totalTimeInSeconds % 60);
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = Math.floor(totalMinutes % 60);
+        const seconds = Math.floor((totalMinutes - Math.floor(totalMinutes)) * 60);
 
         document.getElementById('result').innerText = `Necesitas ver aproximadamente ${hours} horas, ${minutes} minutos, y ${seconds} segundos para ganar ${pointsDesired} puntos en el Tier ${selectedTier}.`;
     }
