@@ -34,6 +34,9 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
+        button.active {
+            background-color: #28a745;
+        }
         button:hover {
             background-color: #0056b3;
         }
@@ -48,14 +51,10 @@
 <div class="container">
     <h1>Calculadora de Tiempo de Visualización</h1>
     <div>
-        <label for="subscriber">Eres suscriptor:</label>
-        <input type="checkbox" id="subscriber" />
-    </div>
-    <div>
-        <button onclick="selectTier(0)">Tier 0</button>
-        <button onclick="selectTier(1)">Tier 1</button>
-        <button onclick="selectTier(2)">Tier 2</button>
-        <button onclick="selectTier(3)">Tier 3</button>
+        <button onclick="selectTier(0)" id="tier0">Tier 0</button>
+        <button onclick="selectTier(1)" id="tier1">Tier 1</button>
+        <button onclick="selectTier(2)" id="tier2">Tier 2</button>
+        <button onclick="selectTier(3)" id="tier3">Tier 3</button>
     </div>
     <input type="number" id="points" placeholder="Ingresa los puntos que quieres ganar" min="0" />
     <button onclick="calculateWatchTime()">Calcular Tiempo de Visualización</button>
@@ -70,11 +69,12 @@
 
     function selectTier(tier) {
         selectedTier = tier;
+        document.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`tier${tier}`).classList.add('active');
     }
 
     function calculateWatchTime() {
         const pointsDesired = parseInt(document.getElementById('points').value);
-        const isSubscriber = document.getElementById('subscriber').checked;
         
         if (!pointsDesired || pointsDesired <= 0) {
             document.getElementById('result').innerText = "Por favor, ingresa un número válido de puntos.";
@@ -82,21 +82,21 @@
         }
 
         const timeBase = {
-            0: { hours: 0, minutes: 18, seconds: 45 },
-            1: { hours: 0, minutes: 15, seconds: 38 },
-            2: { hours: 0, minutes: 13, seconds: 24 },
-            3: { hours: 0, minutes: 9, seconds: 23 }
+            0: { minutes: 18, seconds: 45 },
+            1: { minutes: 15, seconds: 38 },
+            2: { minutes: 13, seconds: 24 },
+            3: { minutes: 9, seconds: 23 }
         };
 
         const baseTime = timeBase[selectedTier];
-        const timeInSeconds = baseTime.hours * 3600 + baseTime.minutes * 60 + baseTime.seconds;
+        const baseTimeInSeconds = baseTime.minutes * 60 + baseTime.seconds;
 
         const pointsMultiplier = tierMultipliers[selectedTier];
-        const bonusPoints = isSubscriber ? bonusPointsPerTier[selectedTier] : 0;
-        const totalPointsPerHour = (pointsPerTier[selectedTier] * 12 + bonusPoints) * pointsMultiplier;
+        const bonusPoints = bonusPointsPerTier[selectedTier];
+        const pointsPerHour = (pointsPerTier[selectedTier] * 12 + bonusPoints) * pointsMultiplier;
 
-        const timePerPoint = timeInSeconds / 100;
-        const totalTimeInSeconds = (pointsDesired * timePerPoint) / totalPointsPerHour;
+        const timePerPoint = baseTimeInSeconds / 100;
+        const totalTimeInSeconds = (pointsDesired * timePerPoint) / pointsPerHour;
 
         const hours = Math.floor(totalTimeInSeconds / 3600);
         const minutes = Math.floor((totalTimeInSeconds % 3600) / 60);
