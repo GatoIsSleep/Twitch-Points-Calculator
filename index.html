@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitch Points Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, select {
+            margin-bottom: 10px;
+            padding: 8px;
+            width: 200px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Twitch Points Calculator</h1>
+    
+    <label for="tier">Select your subscription tier:</label>
+    <select id="tier">
+        <option value="0">Tier 0 (Free)</option>
+        <option value="1">Tier 1</option>
+        <option value="2">Tier 2</option>
+        <option value="3">Tier 3</option>
+    </select>
+
+    <label for="points">Enter starting points:</label>
+    <input type="number" id="points" placeholder="100" />
+
+    <label for="time">Enter watch time (in minutes):</label>
+    <input type="number" id="time" placeholder="15" />
+
+    <label for="active">Active watching?</label>
+    <select id="active">
+        <option value="0">No</option>
+        <option value="1">Yes</option>
+    </select>
+
+    <button onclick="calculatePoints()">Calculate Points</button>
+
+    <h2 id="result">Your new points: </h2>
+
+    <script>
+        function calculatePoints() {
+            let startingPoints = parseInt(document.getElementById('points').value);
+            let watchTime = parseInt(document.getElementById('time').value);
+            let tier = parseInt(document.getElementById('tier').value);
+            let activeWatching = parseInt(document.getElementById('active').value);
+
+            let tierMultipliers = [1, 1.2, 1.4, 2.0];
+            let watchCountedMultiplier = Math.floor(watchTime / 5);
+            let activeMultiplier = Math.floor(watchTime / 15);
+            let watchingPoints = 10;
+            let activeWatchPoints = 50;
+
+            let newPoints = (watchingPoints * watchCountedMultiplier) + (activeWatchPoints * activeMultiplier * activeWatching);
+            newPoints *= tierMultipliers[tier];
+
+            let totalPoints = startingPoints + newPoints;
+
+            document.getElementById('result').innerText = `Your new points: ${Math.floor(totalPoints)}`;
+        }
+    </script>
+</body>
+</html>
