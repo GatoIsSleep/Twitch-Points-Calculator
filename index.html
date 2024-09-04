@@ -1,34 +1,32 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Twitch Points Watch Time Calculator</title>
+    <title>Calculadora de Tiempo de Visualización</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            background-color: #f4f4f4;
         }
         .container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
-        h1 {
-            color: #333;
-        }
-        .tier-button {
-            padding: 15px;
+        button, input {
             margin: 10px;
+            padding: 10px;
             font-size: 16px;
+        }
+        button {
             background-color: #007bff;
             color: white;
             border: none;
@@ -36,110 +34,87 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-        .tier-button:hover {
-            background-color: #0056b3;
-        }
-        .tier-button.active {
-            background-color: #28a745;
-        }
-        input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            margin: 15px 0;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            text-align: center;
-        }
-        button {
-            padding: 15px 25px;
-            font-size: 18px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.3s ease;
-        }
         button:hover {
-            background-color: #218838;
+            background-color: #0056b3;
         }
         #result {
             margin-top: 20px;
             font-size: 18px;
-            color: #333;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Watch Time Calculator</h1>
-
-    <!-- Botones para seleccionar el tier -->
+    <h1>Calculadora de Tiempo de Visualización</h1>
+    <p>Todo lo que necesitas hacer es marcar si eres suscriptor o no, por defecto no eres suscriptor, e ingresar la cantidad de puntos que tienes en tu canal favorito.</p>
+    <p>Luego haz clic en el botón y te mostrará cuánto tiempo te tomó ganar esos puntos.</p>
+    <p>Las horas aproximadas NO tienen en cuenta puntos por raid, cheers/subscriptions mensuales, Follow (Otorgado una vez) y Daily Streak porque no se pueden verificar.</p>
+    <p>En una hora, puedes ganar entre 320 y 640 puntos dependiendo de tu estado de suscripción.</p>
+    <p>Cada 5 minutos recibes 10 puntos como espectador no suscriptor, 12 puntos como Tier 1, 14 puntos como Tier 2, 20 puntos como Tier 3.</p>
+    <p>Cada 15 minutos aparece un ícono de reclamo en el chat. Al hacer clic, el espectador no suscriptor obtiene 50 puntos, el espectador de Tier 1 obtiene 60 puntos, el espectador de Tier 2 obtiene 70 puntos, el espectador de Tier 3 obtiene 100 puntos.</p>
+    
     <div>
-        <button class="tier-button" onclick="selectTier(0)">Tier 0 (Free)</button>
-        <button class="tier-button" onclick="selectTier(1)">Tier 1</button>
-        <button class="tier-button" onclick="selectTier(2)">Tier 2</button>
-        <button class="tier-button" onclick="selectTier(3)">Tier 3</button>
+        <label for="subscriber">Eres suscriptor:</label>
+        <input type="checkbox" id="subscriber" />
     </div>
-
-    <!-- Input para ingresar la cantidad de puntos deseados -->
-    <input type="number" id="points" placeholder="Enter points you want to earn" min="0" />
-
-    <!-- Botón para calcular el tiempo necesario -->
-    <button onclick="calculateWatchTime()">Calculate Watch Time</button>
-
-    <!-- Resultado -->
-    <div id="result">Estimated watch time will appear here.</div>
+    <div>
+        <button onclick="selectTier(0)">Tier 0</button>
+        <button onclick="selectTier(1)">Tier 1</button>
+        <button onclick="selectTier(2)">Tier 2</button>
+        <button onclick="selectTier(3)">Tier 3</button>
+    </div>
+    <input type="number" id="points" placeholder="Ingresa los puntos que quieres ganar" min="0" />
+    <button onclick="calculateWatchTime()">Calcular Tiempo de Visualización</button>
+    <div id="result">El tiempo estimado de visualización aparecerá aquí.</div>
 </div>
 
 <script>
     let selectedTier = 0;
-
-    // Datos para puntos y tiempo
-    const timeData = {
-        0: { points: 100, time: { hours: 0, minutes: 18, seconds: 45 } },
-        1: { points: 1000, time: { hours: 3, minutes: 7, seconds: 30 } }
-    };
-
-    // Multiplicadores por tier
+    const pointsPerTier = [10, 12, 14, 20];
+    const bonusPointsPerTier = [50, 60, 70, 100];
     const tierMultipliers = [1, 1.2, 1.4, 2.0];
 
-    // Función para seleccionar el tier
     function selectTier(tier) {
         selectedTier = tier;
-        const buttons = document.querySelectorAll('.tier-button');
-        buttons.forEach(button => button.classList.remove('active'));
-        buttons[tier].classList.add('active');
     }
 
-    // Función para calcular el tiempo de visualización necesario
     function calculateWatchTime() {
         const pointsDesired = parseInt(document.getElementById('points').value);
+        const isSubscriber = document.getElementById('subscriber').checked;
+        
         if (!pointsDesired || pointsDesired <= 0) {
-            document.getElementById('result').innerText = "Please enter a valid number of points.";
+            document.getElementById('result').innerText = "Por favor, ingresa un número válido de puntos.";
             return;
         }
 
-        const basePoints = timeData[0].points; // Base points for Tier 0
-        const baseTime = timeData[0].time; // Base time for Tier 0
+        // Datos de tiempo base en segundos para 100 puntos
+        const timeBase = {
+            0: { hours: 0, minutes: 18, seconds: 45 },
+            1: { hours: 0, minutes: 15, seconds: 38 },
+            2: { hours: 0, minutes: 13, seconds: 24 },
+            3: { hours: 0, minutes: 9, seconds: 23 }
+        };
 
-        // Calcular el tiempo en segundos para los puntos base
-        const baseTimeInSeconds = baseTime.hours * 3600 + baseTime.minutes * 60 + baseTime.seconds;
+        // Obtener el tiempo base en segundos para el tier seleccionado
+        const baseTime = timeBase[selectedTier];
+        const timeInSeconds = baseTime.hours * 3600 + baseTime.minutes * 60 + baseTime.seconds;
 
-        // Calcula el tiempo necesario para el número de puntos deseados
-        const totalPoints = pointsDesired * tierMultipliers[selectedTier];
-        const secondsPer100Points = baseTimeInSeconds / (basePoints / 100);
-        const totalTimeInSeconds = totalPoints * secondsPer100Points / 100;
+        // Calcular puntos totales incluyendo los puntos de bonificación si es suscriptor
+        const pointsMultiplier = tierMultipliers[selectedTier];
+        const bonusPoints = isSubscriber ? bonusPointsPerTier[selectedTier] : 0;
+        const totalPointsPerHour = (pointsPerTier[selectedTier] * 12 + bonusPoints) * pointsMultiplier;
 
-        // Convertir el tiempo total en horas, minutos y segundos
+        // Calcular el tiempo necesario en segundos
+        const timePerPoint = timeInSeconds / 100;
+        const totalTimeInSeconds = (pointsDesired * timePerPoint) / totalPointsPerHour;
+
+        // Convertir el tiempo total a horas, minutos y segundos
         const hours = Math.floor(totalTimeInSeconds / 3600);
         const minutes = Math.floor((totalTimeInSeconds % 3600) / 60);
         const seconds = Math.floor(totalTimeInSeconds % 60);
 
-        document.getElementById('result').innerText = `You need to watch approximately ${hours} hours, ${minutes} minutes, and ${seconds} seconds to earn ${pointsDesired} points at Tier ${selectedTier}.`;
+        document.getElementById('result').innerText = `Necesitas ver aproximadamente ${hours} horas, ${minutes} minutos, y ${seconds} segundos para ganar ${pointsDesired} puntos en el Tier ${selectedTier}.`;
     }
 </script>
 
