@@ -58,7 +58,7 @@
     </div>
     <input type="number" id="points" placeholder="Points:" min="0" />
     <button onclick="calculateWatchTime()">Calculate</button>
-    <div id="result">You need to see approximately.</div>
+    <div id="result">Helloooooo :D.</div>
 </div>
 
 <script>
@@ -94,7 +94,7 @@
         const minutes = Math.floor(totalMinutes % 60);
         const seconds = Math.floor((totalMinutes - Math.floor(totalMinutes)) * 60);
 
-        document.getElementById('result').innerText = `Necesitas ver aproximadamente ${hours} hours, ${minutes} minutes, y ${seconds} seconds to win ${pointsDesired} Channel Points with Tier ${selectedTier}.`;
+        document.getElementById('result').innerText = `You need to see approximately ${hours} hours, ${minutes} minutes, y ${seconds} seconds to win ${pointsDesired} Channel Points with Tier ${selectedTier}.`;
     }
 </script>
 
