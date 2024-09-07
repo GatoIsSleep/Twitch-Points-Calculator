@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Tiempo de Visualización</title>
+    <title>Channel Points Calculator</title>
     <style>
         body {
             font-family: 'Comic Sans MS', cursive, sans-serif;
@@ -49,16 +49,16 @@
 <body>
 
 <div class="container">
-    <h1>Calculadora de Tiempo de Visualización</h1>
+    <h1>Channel Points Calculator</h1>
     <div>
         <button onclick="selectTier(0)" id="tier0">Tier 0</button>
         <button onclick="selectTier(1)" id="tier1">Tier 1</button>
         <button onclick="selectTier(2)" id="tier2">Tier 2</button>
         <button onclick="selectTier(3)" id="tier3">Tier 3</button>
     </div>
-    <input type="number" id="points" placeholder="Ingresa los puntos que quieres ganar" min="0" />
-    <button onclick="calculateWatchTime()">Calcular Tiempo de Visualización</button>
-    <div id="result">El tiempo estimado de visualización aparecerá aquí.</div>
+    <input type="number" id="points" placeholder="Points:" min="0" />
+    <button onclick="calculateWatchTime()">Calculate</button>
+    <div id="result">You need to see approximately.</div>
 </div>
 
 <script>
@@ -76,7 +76,7 @@
         const pointsDesired = parseInt(document.getElementById('points').value);
         
         if (!pointsDesired || pointsDesired <= 0) {
-            document.getElementById('result').innerText = "Por favor, ingresa un número válido de puntos.";
+            document.getElementById('result').innerText = "Please enter a valid number of points.";
             return;
         }
 
@@ -94,7 +94,7 @@
         const minutes = Math.floor(totalMinutes % 60);
         const seconds = Math.floor((totalMinutes - Math.floor(totalMinutes)) * 60);
 
-        document.getElementById('result').innerText = `Necesitas ver aproximadamente ${hours} horas, ${minutes} minutos, y ${seconds} segundos para ganar ${pointsDesired} puntos en el Tier ${selectedTier}.`;
+        document.getElementById('result').innerText = `Necesitas ver aproximadamente ${hours} hours, ${minutes} minutes, y ${seconds} seconds to win ${pointsDesired} Channel Points with Tier ${selectedTier}.`;
     }
 </script>
 
